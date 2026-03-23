@@ -1,0 +1,39 @@
+--- ALL LINKS CONTAINING l3100pd5.jsp ---
+Text: 'பதிகம்' | href: /slet/l3100/l3100pd5.jsp?bookid=50&pno=1
+Text: 'உரை பெறு கட்டுரை' | href: /slet/l3100/l3100pd5.jsp?bookid=50&pno=2
+Text: 'மங்கல வாழ்த்துப் பாடல்' | href: /slet/l3100/l3100pd5.jsp?bookid=50&pno=3
+Text: 'மனையறம் படுத்த காதை' | href: /slet/l3100/l3100pd5.jsp?bookid=50&pno=4
+Text: 'அரங்கேற்று காதை' | href: /slet/l3100/l3100pd5.jsp?bookid=50&pno=5
+Text: 'அந்திமாலைச் சிறப்புச் செய் காதை' | href: /slet/l3100/l3100pd5.jsp?bookid=50&pno=6
+Text: 'இந்திரவிழவு ஊர் எடுத்த காதை' | href: /slet/l3100/l3100pd5.jsp?bookid=50&pno=7
+Text: 'கடல் ஆடு காதை' | href: /slet/l3100/l3100pd5.jsp?bookid=50&pno=8
+Text: 'கானல் வரி' | href: /slet/l3100/l3100pd5.jsp?bookid=50&pno=9
+Text: 'வேனிற் காதை' | href: /slet/l3100/l3100pd5.jsp?bookid=50&pno=10
+Text: 'கனாத்திறம் உரைத்த காதை' | href: /slet/l3100/l3100pd5.jsp?bookid=50&pno=11
+Text: 'நாடுகாண் காதை' | href: /slet/l3100/l3100pd5.jsp?bookid=50&pno=12
+Text: 'காடுகாண் காதை' | href: /slet/l3100/l3100pd5.jsp?bookid=50&pno=13
+Text: 'வேட்டுவ வரி' | href: /slet/l3100/l3100pd5.jsp?bookid=50&pno=14
+Text: 'புறஞ்சேரி இறுத்த காதை' | href: /slet/l3100/l3100pd5.jsp?bookid=50&pno=15
+Text: 'ஊர் காண் காதை' | href: /slet/l3100/l3100pd5.jsp?bookid=50&pno=16
+Text: 'அடைக்கலக் காதை' | href: /slet/l3100/l3100pd5.jsp?bookid=50&pno=17
+Text: 'கொலைக்களக் காதை' | href: /slet/l3100/l3100pd5.jsp?bookid=50&pno=18
+Text: 'ஆய்ச்சியர் குரவை' | href: /slet/l3100/l3100pd5.jsp?bookid=50&pno=19
+Text: 'துன்ப மாலை' | href: /slet/l3100/l3100pd5.jsp?bookid=50&pno=20
+Text: 'ஊர்சூழ் வரி' | href: /slet/l3100/l3100pd5.jsp?bookid=50&pno=21
+Text: 'வழக்குரை காதை' | href: /slet/l3100/l3100pd5.jsp?bookid=50&pno=22
+Text: 'வஞ்சின மாலை' | href: /slet/l3100/l3100pd5.jsp?bookid=50&pno=23
+Text: 'அழற்படு காதை' | href: /slet/l3100/l3100pd5.jsp?bookid=50&pno=24
+Text: 'கட்டுரை காதை' | href: /slet/l3100/l3100pd5.jsp?bookid=50&pno=25
+Text: 'குன்றக் குரவை' | href: /slet/l3100/l3100pd5.jsp?bookid=50&pno=26
+Text: 'காட்சிக் காதை' | href: /slet/l3100/l3100pd5.jsp?bookid=50&pno=27
+Text: 'கால்கோள் காதை' | href: /slet/l3100/l3100pd5.jsp?bookid=50&pno=28
+Text: 'நீர்ப்படைக் காதை' | href: /slet/l3100/l3100pd5.jsp?bookid=50&pno=29
+Text: 'நடுகல் காதை' | href: /slet/l3100/l3100pd5.jsp?bookid=50&pno=30
+Text: 'வாழ்த்துக் காதை' | href: /slet/l3100/l3100pd5.jsp?bookid=50&pno=31
+Text: 'வரந்தரு காதை' | href: /slet/l3100/l3100pd5.jsp?bookid=50&pno=32
+Text: 'நூல் கட்டுரை' | href: /slet/l3100/l3100pd5.jsp?bookid=50&pno=33
+
+--- CHECKING MISSING CHAPTERS FEASIBILITY ---
+FOUND MATCHING TEXT: 'கனாத்திறம் உரைத்த காதை' | href: /slet/l3100/l3100pd5.jsp?bookid=50&pno=11
+FOUND MATCHING TEXT: 'கட்டுரை காதை' | href: /slet/l3100/l3100pd5.jsp?bookid=50&pno=25
+FOUND MATCHING TEXT: 'வரந்தரு காதை' | href: /slet/l3100/l3100pd5.jsp?bookid=50&pno=32
