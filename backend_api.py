@@ -9,7 +9,7 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
-# Enable CORS for React frontend
+# Enable CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -21,12 +21,12 @@ app.add_middleware(
 class QueryRequest(BaseModel):
     query: str
 
-# Globals (initialized later)
+# Globals
 embedding_function = None
 client = None
 collection = None
 
-# Safe file path
+# File path
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 FILE_PATH = os.path.join(BASE_DIR, "silappatikaram_full.json")
 
@@ -54,7 +54,7 @@ def populate_db():
     except Exception as e:
         print(f"⚠️ DB population error: {e}")
 
-# Startup event (CRITICAL FIX)
+# ✅ LIGHTWEIGHT STARTUP (NO HEAVY WORK)
 @app.on_event("startup")
 async def startup_event():
     global embedding_function, client, collection
@@ -72,11 +72,9 @@ async def startup_event():
         embedding_function=embedding_function
     )
 
-    populate_db()
+    print("✅ Server ready (DB will load on first request)")
 
-    print("✅ Server ready")
-
-# Health check route
+# Health check
 @app.get("/")
 def root():
     return {"message": "API is running"}
@@ -84,7 +82,14 @@ def root():
 # Chat endpoint
 @app.post("/api/chat")
 async def chat(request: QueryRequest):
+    global collection
+
     try:
+        # 🔥 LAZY LOAD DB (ONLY FIRST TIME)
+        if collection.count() == 0:
+            print("⚡ First request → loading DB...")
+            populate_db()
+
         results = collection.query(query_texts=[request.query], n_results=2)
         retrieved_docs = results["documents"][0]
 
