@@ -17,7 +17,7 @@ export default function App() {
     }
   ]);
   const [loading, setLoading] = useState(false);
-
+  const API_URL = import.meta.env.VITE_API_URL;
   const handleSendMessage = async (text) => {
     // 1. Add User Message
     const userMessage = {
@@ -30,13 +30,13 @@ export default function App() {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ query: text }),
-      });
+  const response = await fetch(`${API_URL}/api/chat`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ query: text }),
+  });
 
       if (response.ok) {
         const data = await response.json();
@@ -56,7 +56,7 @@ export default function App() {
   };
 
   const simulateFallbackResponse = (query) => {
-    const fallbackText = `I have received your query about "${query}". To get live answers, please set up a local backend wrapper using your rag_chroma.py script, or ensure the server is listening at localhost:5000.`;
+    const fallbackText = `⚠️ Unable to connect to Adigal AI server. Please try again later.`;
     addBotMessage(fallbackText);
   };
 
