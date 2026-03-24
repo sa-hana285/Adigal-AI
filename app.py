@@ -24,7 +24,7 @@ class QueryRequest(BaseModel):
 # Globals
 client = chromadb.Client()
 
-# ✅ LIGHTWEIGHT EMBEDDING (NO TORCH)
+# ✅ Lightweight embedding
 embedding_function = embedding_functions.DefaultEmbeddingFunction()
 
 collection = client.get_or_create_collection(
@@ -32,30 +32,36 @@ collection = client.get_or_create_collection(
     embedding_function=embedding_function
 )
 
-# File path fix
+# File path
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 FILE_PATH = os.path.join(BASE_DIR, "silappatikaram_full.json")
 
-# Populate DB (lazy loading)
+# 🔥 DB populate (SAFE VERSION)
 def populate_db():
     try:
-        if collection.count() == 0:
-            print("📦 Populating DB...")
+        if collection.count() > 0:
+            return  # already loaded
 
-            with open(FILE_PATH, "r", encoding="utf-8") as f:
-                data = json.load(f)
+        print("📦 Populating DB...")
 
-            documents, metadatas, ids = [], [], []
+        if not os.path.exists(FILE_PATH):
+            print("❌ JSON file not found")
+            return
 
-            for i, item in enumerate(data):
-                text = f"Title: {item['title']}\nVerse: {item['verse']}\nExplanation: {item['urai']}"
-                documents.append(text)
-                metadatas.append({"title": item["title"], "source": item["source"]})
-                ids.append(str(i))
+        with open(FILE_PATH, "r", encoding="utf-8") as f:
+            data = json.load(f)
 
-            collection.add(documents=documents, metadatas=metadatas, ids=ids)
+        documents, metadatas, ids = [], [], []
 
-            print("✅ DB Ready")
+        for i, item in enumerate(data):
+            text = f"Title: {item.get('title','')}\nVerse: {item.get('verse','')}\nExplanation: {item.get('urai','')}"
+            documents.append(text)
+            metadatas.append({"title": item.get("title", ""), "source": item.get("source", "")})
+            ids.append(str(i))
+
+        collection.add(documents=documents, metadatas=metadatas, ids=ids)
+
+        print("✅ DB Ready")
 
     except Exception as e:
         print(f"⚠️ DB error: {e}")
@@ -69,11 +75,15 @@ def root():
 @app.post("/api/chat")
 async def chat(request: QueryRequest):
     try:
-        # 🔥 Lazy load DB
-        if collection.count() == 0:
-            populate_db()
+        # 🔥 Lazy DB load
+        populate_db()
 
         results = collection.query(query_texts=[request.query], n_results=2)
+
+        # 🛑 Safety check
+        if not results or not results.get("documents"):
+            return {"answer": "No relevant data found."}
+
         retrieved_docs = results["documents"][0]
 
         context = ""
@@ -83,8 +93,12 @@ async def chat(request: QueryRequest):
             else:
                 context += doc[:500] + "\n\n"
 
-        # ✅ FIXED GROQ INIT
-        client_llm = Groq(api_key=os.getenv("GROQ_API_KEY"))
+        # 🔐 API key check
+        api_key = os.getenv("GROQ_API_KEY")
+        if not api_key:
+            raise Exception("GROQ_API_KEY not set")
+
+        client_llm = Groq(api_key=api_key)
 
         prompt = f"""
 You are an expert on the Tamil epic Silappatikaram.
@@ -114,4 +128,5 @@ Answer:
         return {"answer": response.choices[0].message.content}
 
     except Exception as e:
+        print(f"❌ ERROR: {e}")
         raise HTTPException(status_code=500, detail=str(e))
