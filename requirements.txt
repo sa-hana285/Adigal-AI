@@ -3,6 +3,5 @@ groq
 fastapi
 pydantic
 uvicorn
-sentence-transformers
 requests
 beautifulsoup4

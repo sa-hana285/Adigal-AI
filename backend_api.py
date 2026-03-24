@@ -9,7 +9,7 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
-# Enable CORS
+# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -22,19 +22,25 @@ class QueryRequest(BaseModel):
     query: str
 
 # Globals
-embedding_function = None
-client = None
-collection = None
+client = chromadb.Client()
 
-# File path
+# ✅ LIGHTWEIGHT EMBEDDING (NO TORCH)
+embedding_function = embedding_functions.DefaultEmbeddingFunction()
+
+collection = client.get_or_create_collection(
+    name="silappatikaram",
+    embedding_function=embedding_function
+)
+
+# File path fix
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 FILE_PATH = os.path.join(BASE_DIR, "silappatikaram_full.json")
 
-# Populate DB
+# Populate DB (lazy loading)
 def populate_db():
     try:
         if collection.count() == 0:
-            print("📦 Populating ChromaDB...")
+            print("📦 Populating DB...")
 
             with open(FILE_PATH, "r", encoding="utf-8") as f:
                 data = json.load(f)
@@ -49,30 +55,10 @@ def populate_db():
 
             collection.add(documents=documents, metadatas=metadatas, ids=ids)
 
-            print("✅ ChromaDB Populated")
+            print("✅ DB Ready")
 
     except Exception as e:
-        print(f"⚠️ DB population error: {e}")
-
-# ✅ LIGHTWEIGHT STARTUP (NO HEAVY WORK)
-@app.on_event("startup")
-async def startup_event():
-    global embedding_function, client, collection
-
-    print("🚀 Starting server...")
-
-    embedding_function = embedding_functions.SentenceTransformerEmbeddingFunction(
-        model_name="paraphrase-multilingual-MiniLM-L12-v2"
-    )
-
-    client = chromadb.Client()
-
-    collection = client.get_or_create_collection(
-        name="silappatikaram",
-        embedding_function=embedding_function
-    )
-
-    print("✅ Server ready (DB will load on first request)")
+        print(f"⚠️ DB error: {e}")
 
 # Health check
 @app.get("/")
@@ -82,12 +68,9 @@ def root():
 # Chat endpoint
 @app.post("/api/chat")
 async def chat(request: QueryRequest):
-    global collection
-
     try:
-        # 🔥 LAZY LOAD DB (ONLY FIRST TIME)
+        # 🔥 Lazy load DB
         if collection.count() == 0:
-            print("⚡ First request → loading DB...")
             populate_db()
 
         results = collection.query(query_texts=[request.query], n_results=2)
@@ -100,16 +83,15 @@ async def chat(request: QueryRequest):
             else:
                 context += doc[:500] + "\n\n"
 
+        # ✅ FIXED GROQ INIT
         client_llm = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
         prompt = f"""
-You are an exclusive expert on the Tamil epic Silappatikaram.
+You are an expert on the Tamil epic Silappatikaram.
 
-Carefully understand the Tamil context and explain the meaning in simple English.
-Do NOT translate word-by-word. Focus on story events.
+Explain the meaning in simple English based on story context.
 
-⚠️ CRITICAL RULE:
-If the question is UNRELATED to Silappatikaram, you MUST politely refuse.
+If the question is unrelated, politely refuse.
 
 Context:
 {context}
@@ -117,7 +99,7 @@ Context:
 Question:
 {request.query}
 
-Final Answer:
+Answer:
 """
 
         response = client_llm.chat.completions.create(
